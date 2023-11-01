@@ -1,7 +1,7 @@
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const { connect } = require("./db");
 
 const app = express();
 const PORT = 3001 || process.env.PORT;
@@ -9,15 +9,23 @@ const PORT = 3001 || process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Stripe Test server loaded.');
+app.get("/", (req, res) => {
+  res.send("Stripe Test server loaded.");
 });
 
-const checkoutRouter = require('./routes/checkout');
-const paymentIntentRouter = require('./routes/paymentIntent');
+connect();
 
-app.use('/', checkoutRouter);
-app.use('/', paymentIntentRouter);
+const checkoutRouter = require("./routes/checkout");
+const eventInfoRouter = require("./routes/eventInfo");
+const stripeWebhooksRouter = require("./routes/stripeWebhooks");
+
+app.use("/checkout", checkoutRouter);
+app.use("/events", eventInfoRouter);
+app.use(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhooksRouter
+);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

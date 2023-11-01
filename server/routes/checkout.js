@@ -1,32 +1,42 @@
-require('dotenv').config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Event = require("../schemas/eventInfo");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+router.post("/create-checkout-session", async (req, res) => {
+  const { eventId } = req.body;
 
-router.post('/create-checkout-session', async (req, res) => {
-  console.log("create-checkout-session");
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [{
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: "Sean's Dinner Party",
+  try {
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: event.title,
+            },
+            unit_amount: event.price * 100,
+          },
+          quantity: 1,
         },
-        unit_amount: 2000, 
-      },
-      quantity: 1,
-    }],
-    mode: 'payment',
-    success_url: 'http://localhost:3000/success',
-    cancel_url: 'http://localhost:3000/failure',
-  });
+      ],
+      mode: "payment",
+      success_url: "http://localhost:3000/success?eventId=" + eventId,
+      cancel_url: "http://localhost:3000/failure",
+      metadata: { eventId: event._id.toString() },
+    });
 
-  // the question here is: if it is successful how can we update the 
-  // database to reflect the purchase ?
-
-  res.json({ id: session.id });
+    res.json({ id: session.id });
+  } catch (error) {
+    res.status(500).json({ error: "Error creating checkout session" });
+  }
 });
 
 module.exports = router;

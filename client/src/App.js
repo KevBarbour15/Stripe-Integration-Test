@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./styles/App.css";
 import StripeTest from "./pages/StripeTest";
 import Success from "./pages/Success";
 import Failure from "./pages/Failure";
