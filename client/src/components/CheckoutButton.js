@@ -16,6 +16,7 @@ const stripePromise = loadStripe(
 
 const CheckoutButton = ({ eventId }) => {
   const handleClick = async () => {
+    
     const response = await fetch(
       "http://localhost:3001/checkout/create-checkout-session",
       {

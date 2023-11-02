@@ -1,0 +1,8 @@
+THOUGHTS:
+
+- do we want some kind of confirmation email sent after?
+  - do i have to design it? does Stripe do it for me?
+
+
+- how can we connect users to their payments in the db and stripe for refunds and easier management?
+  - what are other use cases? like if someone cancels?

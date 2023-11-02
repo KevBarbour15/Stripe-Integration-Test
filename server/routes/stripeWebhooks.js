@@ -5,10 +5,9 @@ const Event = require("../schemas/eventInfo");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const ENDPOINT_SECRET = process.env.STRIPE_ENDPOINT_SECRET;
 
-//// to test: stripe listen --forward-to localhost:3001/webhook/update
+// to test: stripe listen --forward-to localhost:3001/webhook/update
 router.post("/update", (request, response) => {
   const sig = request.headers["stripe-signature"];
-  console.log("WEBHOOK RECEIVED");
   let event;
 
   try {
@@ -19,38 +18,71 @@ router.post("/update", (request, response) => {
     return;
   }
 
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      const session = event.data.object;
-      const eventId = session.metadata.eventId;
+  const session = event.data.object;
+  const eventId = session.metadata.eventId;
 
-      decrementSeatForEvent(eventId)
+  switch (event.type) {
+    // handling successful checkout and seating
+    case "checkout.session.completed":
+      updateEventSeats("success", eventId)
         .then(() => {
-          console.log("Seat decremented successfully!");
           response.json({ received: true });
         })
         .catch((error) => {
-          console.error("Error decrementing seat:", error);
           response.status(500).send();
         });
       break;
+    // handling refunds and seating
+    case "charge.refunded":
+      console.log("Refund completed successfully!");
+      const charge = event.data.object;
 
-    // ... handle other event types in the future here
+      stripe.paymentIntents
+        .retrieve(charge.payment_intent)
+        .then((paymentIntent) => {
+          const eventId = paymentIntent.metadata.eventId;
+
+          if (eventId) {
+            updateEventSeats("refund", eventId)
+              .then(() => {
+                console.log("Seat incremented successfully due to refund!");
+                response.json({ received: true });
+              })
+              .catch((error) => {
+                console.error("Error incrementing seat:", error);
+                response.status(500).send();
+              });
+          } else {
+            console.error("Event ID not found in metadata.");
+            response.status(500).send("Metadata not found");
+          }
+        })
+        .catch((err) => {
+          console.error("Error retrieving PaymentIntent:", err);
+          response.status(500).send("Error retrieving PaymentIntent");
+        });
+      break;
+
     default:
       console.log(`Unhandled event type ${event.type}`);
+      response.send();
   }
-
-  response.send();
 });
 
-async function decrementSeatForEvent(eventId) {
+// adjust event seats accordingly
+async function updateEventSeats(type, eventId) {
   try {
     const event = await Event.findById(eventId);
     if (!event) {
       throw new Error("Event not found");
     }
 
-    event.seatsRemaining -= 1;
+    if (type === "success") {
+      event.seatsRemaining -= 1;
+    } else if (type === "refund") {
+      event.seatsRemaining += 1;
+    }
+
     await event.save();
   } catch (error) {
     throw error;

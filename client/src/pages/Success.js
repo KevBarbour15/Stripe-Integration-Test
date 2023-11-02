@@ -5,7 +5,7 @@ const Success = () => {
   return (
     <div>
       <h1>Payment successful!</h1>
-      <Link to="/">Buy again</Link>
+      <Link to="/">Home</Link>
     </div>
   );
 };

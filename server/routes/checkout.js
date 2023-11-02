@@ -11,6 +11,8 @@ router.post("/create-checkout-session", async (req, res) => {
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
+    } else {
+      console.log("Found event: " + event._id);
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -30,7 +32,10 @@ router.post("/create-checkout-session", async (req, res) => {
       mode: "payment",
       success_url: "http://localhost:3000/success?eventId=" + eventId,
       cancel_url: "http://localhost:3000/failure",
-      metadata: { eventId: event._id.toString() },
+      metadata: { eventId: eventId },
+      payment_intent_data: {
+        metadata: { eventId: eventId },
+      },
     });
 
     res.json({ id: session.id });

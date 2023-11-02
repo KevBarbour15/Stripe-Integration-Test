@@ -40,7 +40,11 @@ const EventDisplay = () => {
           <p>Date: {selectedEvent.date}</p>
           <p>Time: {selectedEvent.time}</p>
           <p>Price: {selectedEvent.price}</p>
-          <CheckoutButton eventId={selectedEvent._id}/>
+          {selectedEvent.seatsRemaining === 0 ? (
+            <p>This Event Is Sold Out!</p>
+          ) : (
+            <CheckoutButton eventId={selectedEvent._id} />
+          )}
         </div>
       )}
     </div>
