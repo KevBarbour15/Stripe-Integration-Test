@@ -15,6 +15,10 @@
     border: 1px solid black;  
 }
 
+.event-title{
+  text-decoration: underline;
+}
+
 .checkout-section {
     display: flex;
     flex-direction: column;

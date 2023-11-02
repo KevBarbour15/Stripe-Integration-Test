@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import CheckoutButton from "../components/CheckoutButton";
+import { convertMilitaryTime, convertDateReadability } from "../helpers";
 
-// notes to self: we will eventually want Stripe webhooks to update the seatsRemaining field in the database
+
 const EventDisplay = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  
   useEffect(() => {
     fetch("http://localhost:3001/events/get-all")
       .then((response) => response.json())
@@ -21,7 +23,7 @@ const EventDisplay = () => {
 
   return (
     <div className="event-form">
-      <h1>View Event Details</h1>
+      <h1>~View Event Details~</h1>
       <select onChange={handleEventChange}>
         <option value="">Select an event</option>
         {events.map((event) => (
@@ -33,13 +35,13 @@ const EventDisplay = () => {
 
       {selectedEvent && (
         <div>
-          <h2>{selectedEvent.title}</h2>
+          <h2 className="event-title">{selectedEvent.title}</h2>
           <p>Description: {selectedEvent.description}</p>
           <p>Seats: {selectedEvent.seats}</p>
           <p>Seats Available: {selectedEvent.seatsRemaining}</p>
-          <p>Date: {selectedEvent.date}</p>
-          <p>Time: {selectedEvent.time}</p>
-          <p>Price: {selectedEvent.price}</p>
+          <p>Date: {convertDateReadability(selectedEvent.date)}</p>
+          <p>Time: {convertMilitaryTime(selectedEvent.time)}</p>
+          <p>Price: ${selectedEvent.price}</p>
           {selectedEvent.seatsRemaining === 0 ? (
             <p>This Event Is Sold Out!</p>
           ) : (

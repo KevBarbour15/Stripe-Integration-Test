@@ -49,7 +49,7 @@ const CreateEvent = () => {
 
   return (
       <div className="event-form">
-        <h1>Create New Event</h1>
+        <h1>~Create New Event~</h1>
         <form onSubmit={handleSubmit}>
           <label>
             Title:
