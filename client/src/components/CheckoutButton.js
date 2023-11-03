@@ -1,5 +1,6 @@
 import React from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import axios from "../AxiosConfig";
 
 const stripePromise = loadStripe(
   "pk_test_51O5vqNFi2BcJnxILc59QiYGTRBsydIj1gxeg0u3F2CLIrExeQqHhcQFkiDiuJKcbmcX8nRHWqdl9IOG8HrsV7V0O00031E6PP9"
@@ -16,26 +17,24 @@ const stripePromise = loadStripe(
 
 const CheckoutButton = ({ eventId }) => {
   const handleClick = async () => {
-    
-    const response = await fetch(
-      "http://localhost:3001/checkout/create-checkout-session",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ eventId }),
-      }
-    );
-    const session = await response.json();
-    console.log(session.id);
-    const stripe = await stripePromise;
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
+    try {
+      const { data: session } = await axios.post(
+        "/checkout/create-checkout-session",
+        { eventId }
+      );
+      console.log(session.id);
+      const stripe = await stripePromise;
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
 
-    if (result.error) {
-      alert(result.error.message);
+      if (result.error) {
+        alert(result.error.message);
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('Error during checkout:', error);
+      alert('There was an error redirecting to Stripe checkout.');
     }
   };
 

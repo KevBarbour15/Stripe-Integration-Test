@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
+import axios from "../AxiosConfig"; // Make sure to import axios from your configuration
 import CheckoutButton from "../components/CheckoutButton";
 import { convertMilitaryTime, convertDateReadability } from "../helpers";
 
-
-const EventDisplay = () => {
+const DisplayEvents = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   
   useEffect(() => {
-    fetch("http://localhost:3001/events/get-all")
-      .then((response) => response.json())
-      .then((data) => setEvents(data))
-      .catch((error) => console.error("Error fetching events:", error));
+    // Here we use axios to fetch data
+    axios.get("http://localhost:3001/events/get-all")
+      .then((response) => {
+        setEvents(response.data); // With axios, the data is accessed with response.data
+      })
+      .catch((error) => {
+        console.error("Error fetching events:", error);
+      });
   }, []);
 
   const handleEventChange = (e) => {
@@ -53,4 +56,4 @@ const EventDisplay = () => {
   );
 };
 
-export default EventDisplay;
+export default DisplayEvents;
