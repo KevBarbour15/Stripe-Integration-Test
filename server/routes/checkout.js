@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const Event = require("../schemas/eventInfo");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const baseUrl = process.env.BASE_URL;
+
 
 router.post("/create-checkout-session", async (req, res) => {
   const { eventId } = req.body;
@@ -30,8 +32,8 @@ router.post("/create-checkout-session", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: "http://localhost:3000/success?eventId=" + eventId,
-      cancel_url: "http://localhost:3000/failure",
+      success_url: `${baseUrl}/success?eventId=${eventId}`,
+      cancel_url: `${baseUrl}/failure`,
       metadata: { eventId: eventId },
       payment_intent_data: {
         metadata: { eventId: eventId },

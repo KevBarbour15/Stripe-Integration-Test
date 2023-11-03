@@ -9,7 +9,7 @@ const DisplayEvents = () => {
   
   useEffect(() => {
     // Here we use axios to fetch data
-    axios.get("http://localhost:3001/events/get-all")
+    axios.get("/events/get-all")
       .then((response) => {
         setEvents(response.data); // With axios, the data is accessed with response.data
       })
