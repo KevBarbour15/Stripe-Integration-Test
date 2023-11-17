@@ -12,7 +12,7 @@ Stripe Payment Integration: Enables clients to simulate Stripe payments for atte
 Webhooks for Payment Updates: Utilizes Stripe's webhooks to adjust the database based on payment activities. This includes decrementing a seat count upon successful payment and incrementing it if a payment is refunded through the Stripe dashboard.
 
 *** Testing ***
-To test live deployment of the application go to: https://seans-dinners.onrender.com
+To test live deployment of the application go to: https://stripe-test-6rke.onrender.com
 
 Feel free to create whatever events you want.
 
