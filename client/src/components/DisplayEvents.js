@@ -46,7 +46,7 @@ const DisplayEvents = () => {
           <p>Time: {convertMilitaryTime(selectedEvent.time)}</p>
           <p>Price: ${selectedEvent.price}</p>
           {selectedEvent.seatsRemaining === 0 ? (
-            <p>This Event Is Sold Out!</p>
+            <h2>This Event Is Sold Out!</h2>
           ) : (
             <CheckoutButton eventId={selectedEvent._id} />
           )}

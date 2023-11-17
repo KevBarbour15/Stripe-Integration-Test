@@ -1,8 +1,25 @@
-THOUGHTS:
+*** OVERVIEW ***
 
-- do we want some kind of confirmation email sent after?
-  - do i have to design it? does Stripe do it for me?
+This project is a basic MERN (MongoDB, Express.js, React, Node.js) stack application with minimal styling, focused on integrating Stripe for payment processing. It is designed as a learning exercise for implementing Stripe integration and designing a responsive database. The application allows clients to create and manage dinner events, with real-time database updates reflecting these changes.
+
+*** Features ***
+
+Dinner Event Creation: Clients can create dinner events, specifying details like date, time, and the number of seats available.
+
+Real-Time Database Updates: The database is updated in real-time as events are created, modified, or deleted.
+
+Stripe Payment Integration: Enables clients to simulate Stripe payments for attending specific dinner events.
+Webhooks for Payment Updates: Utilizes Stripe's webhooks to adjust the database based on payment activities. This includes decrementing a seat count upon successful payment and incrementing it if a payment is refunded through the Stripe dashboard.
+
+*** Testing ***
+To test live deployment of the application go to: https://seans-dinners.onrender.com
+
+Feel free to create whatever events you want.
+
+To attempt a test purchase use:
+
+Card Number: 4242 4242 4242 4242
+Expiry: Any future date
+CVC: Any 3 digits
 
 
-- how can we connect users to their payments in the db and stripe for refunds and easier management?
-  - what are other use cases? like if someone cancels?
