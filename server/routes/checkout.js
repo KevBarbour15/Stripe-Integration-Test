@@ -8,7 +8,7 @@ const baseUrl = process.env.BASE_URL;
 
 router.post("/create-checkout-session", async (req, res) => {
   const { eventId } = req.body;
-  console.log(baseURl);
+  console.log(baseUrl);
   try {
     const event = await Event.findById(eventId);
     if (!event) {
