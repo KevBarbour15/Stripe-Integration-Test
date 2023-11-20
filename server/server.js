@@ -6,6 +6,8 @@ const { connect } = require("./db");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(logIncomingRequests);
+
 const stripeWebhooksRouter = require("./routes/stripeWebhooks");
 app.use(
   "/webhook",
@@ -31,3 +33,15 @@ app.use("/events", eventInfoRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+function logIncomingRequests(req, res, next) {
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  console.log(`Headers: ${JSON.stringify(req.headers)}`);
+  if (req.body && Object.keys(req.body).length !== 0) {
+      console.log(`Body: ${JSON.stringify(req.body)}`);
+  }
+  console.log("*****");
+  console.log();
+  next(); // Important to call next() to continue to the next middleware/route handler
+}

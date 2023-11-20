@@ -5,7 +5,7 @@ const Event = require("../schemas/eventInfo");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const ENDPOINT_SECRET = process.env.STRIPE_ENDPOINT_SECRET;
 
-// to test: stripe listen --forward-to localhost:3001/webhook/update
+// to test locally: stripe listen --forward-to localhost:3001/webhook/update
 router.post("/update", (request, response) => {
   const sig = request.headers["stripe-signature"];
   let event;
