@@ -7,6 +7,8 @@ const ENDPOINT_SECRET = process.env.STRIPE_ENDPOINT_SECRET;
 
 // to test locally: stripe listen --forward-to localhost:3001/webhook/update
 router.post("/update", (request, response) => {
+  console.log("Received webhook request!");
+  
   const sig = request.headers["stripe-signature"];
   let event;
 

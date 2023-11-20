@@ -6,8 +6,6 @@ const { connect } = require("./db");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(logIncomingRequests);
-
 const stripeWebhooksRouter = require("./routes/stripeWebhooks");
 app.use(
   "/webhook",
